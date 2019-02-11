@@ -1,0 +1,5 @@
+- targets:
+    - '{{ ansible_fqdn }}:{{ greenplum_exporter_port }}'
+  labels:
+    job: postgresql
+    team: {{ greenplum_exporter_team }}

@@ -1,0 +1,30 @@
+---
+# tasks file for greenplum_exporter
+
+- name: create directory for exporter | Greenplum
+  file:
+    state: directory
+    path: "{{ greenplum_exporter_dir }}"
+    owner: "{{ greenplum_exporter_user }}"
+    recurse: true
+
+- name: download and unpack exporter | Greenplum
+  unarchive:
+    src: postgres_exporter.tgz
+    dest: "{{ greenplum_exporter_dir }}"
+    owner: "{{ greenplum_exporter_user }}"
+  notify: restart greenplum-exporter
+
+- name: create service | Greenplum
+  template: src='greenplum-exporter.service.j2' dest='/etc/systemd/system/greenplum-exporter.service'
+  notify: restart greenplum-exporter
+
+- name: start service | Greenplum
+  service: name=greenplum-exporter state=started enabled=yes
+
+- name: create prometheus job file for metrics gathering | Greenplum
+  template: src=greenplum-prometheus.yaml.j2 dest=/etc/prometheus/hosts/greenplum-{{ ansible_fqdn }}.yaml
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  notify: reload prometheus
+  with_items: "{{ groups.prometheus | default([]) }}"

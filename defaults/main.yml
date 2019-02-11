@@ -9,7 +9,6 @@ node_exporter_uri: "https://github.com/prometheus/node_exporter/releases/downloa
 node_exporter_port: 9100
 
 postgres_exporter_enable: False
-postgres_exporter_pgstats: True
 postgres_exporter_user: 'postgres_exporter'
 postgres_exporter_dir: '/opt/postgres_exporter'
 postgres_exporter_connection_string: 'DATA_SOURCE_NAME="user=postgres host=/var/run/postgresql/ sslmode=disable"'
@@ -18,3 +17,10 @@ postgres_exporter_version: "0.4.7"
 postgres_exporter_uri: "https://github.com/wrouesnel/postgres_exporter/releases/download/v{{ postgres_exporter_version }}/postgres_exporter_v{{ postgres_exporter_version }}_linux-amd64.tar.gz"
 postgres_exporter_port: 9187
 postgres_exporter_team: 'dba'
+
+greenplum_exporter_enable: False
+greenplum_exporter_user: 'gpadmin'
+greenplum_exporter_dir: '/opt/greenplum_exporter'
+greenplum_exporter_start_flags: "--web.listen-address=:{{ greenplum_exporter_port }} --disable-settings-metrics"
+greenplum_exporter_port: 9187
+greenplum_exporter_team: 'dba'

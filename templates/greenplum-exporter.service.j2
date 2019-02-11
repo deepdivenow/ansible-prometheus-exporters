@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus exporter for Postgresql (https://github.com/wrouesnel/greenplum_exporter)
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60s
+TimeoutStartSec=20
+WorkingDirectory={{ greenplum_exporter_dir }}
+Environment="DATA_SOURCE_NAME=postgresql://gpadmin:@localhost:5432/postgres?sslmode=disable"
+ExecStart={{ greenplum_exporter_dir }}/postgres_exporter {{ greenplum_exporter_start_flags }}
+User={{ greenplum_exporter_user }}
+
+[Install]
+WantedBy=multi-user.target

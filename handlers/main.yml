@@ -7,6 +7,9 @@
 - name: restart postgresql-exporter
   service: name=postgresql-exporter state=restarted daemon-reload=yes
 
+- name: restart greenplum-exporter
+  service: name=greenplum-exporter state=restarted daemon-reload=yes
+
 - name: reload prometheus
   uri:
     url: http://localhost:9090/-/reload

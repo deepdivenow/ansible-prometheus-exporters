@@ -6,5 +6,9 @@
   tags: [prometheus-exporters, node-exporter]
 
 - import_tasks: postgresql.yml
-  when: postgresql_exporter_enable
+  when: postgres_exporter_enable
   tags: [prometheus-exporters, postgresql-exporter, postgres-exporter]
+
+- import_tasks: greenplum.yml
+  when: greenplum_exporter_enable
+  tags: [prometheus-exporters, greenplum-exporter]
