@@ -1,0 +1,54 @@
+---
+# tasks file for postgres_exporter
+
+- name: add pg_stat_statements extention | Portgresql
+  postgresql_ext:  name='pg_stat_statements' db='postgres'
+  become_user: postgres
+  when: postgres_exporter_pgstats
+
+- name: create user for exporter | Portgresql
+  user: name="{{ postgres_exporter_user }}"
+
+- name: create directory for exporter | Portgresql
+  file:
+    state: directory
+    path: "{{ postgres_exporter_dir }}"
+    owner: "{{ postgres_exporter_user }}"
+    recurse: true
+
+- name: download and unpack exporter | Portgresql
+  unarchive:
+    src: "{{ postgres_exporter_uri }}"
+    dest: "{{ postgres_exporter_dir }}"
+    remote_src: yes
+    owner: "{{ postgres_exporter_user }}"
+    extra_opts: [--strip-components=1]
+  notify: restart postgresql-exporter
+
+- name: create metrics file | Portgresql
+  template: src="postgres-metrics.yaml.j2" dest="{{ postgres_exporter_dir }}/metrics.yaml" owner="{{ postgres_exporter_user }}"
+  notify: restart postgresql-exporter
+  when: postgres_exporter_pgstats
+
+- name:
+  set_fact:
+    postgres_exporter_start_flags: "--web.listen-address=:{{ postgres_exporter_port }}"
+  when: not postgres_exporter_pgstats
+
+- name: Create env file | Portgresql
+  template: src='postgres-env.j2' dest="{{ postgres_exporter_dir }}/env" owner="{{ postgres_exporter_user }}"
+  notify: restart postgresql-exporter
+
+- name: create service | Portgresql
+  template: src='postgres-exporter.service.j2' dest='/etc/systemd/system/postgresql-exporter.service'
+  notify: restart postgresql-exporter
+
+- name: start service | Portgresql
+  service: name=postgresql-exporter state=started enabled=yes
+
+- name: create prometheus job file for metrics gathering | Portgresql
+  template: src=postgres-prometheus.yaml.j2 dest=/etc/prometheus/hosts/postgresql-{{ ansible_fqdn }}.yaml
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  notify: reload prometheus
+  with_items: "{{ groups.prometheus | default([]) }}"

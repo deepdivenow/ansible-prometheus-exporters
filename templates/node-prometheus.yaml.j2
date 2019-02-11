@@ -1,0 +1,7 @@
+- targets:
+    - '{{ ansible_fqdn }}:{{ node_exporter_port }}'
+  labels:
+    job: node
+{% if node_exporter_team is defined %}
+    team: {{ node_exporter_team }}
+{% endif %}

@@ -1,0 +1,20 @@
+---
+# defaults file for ansible-prometheus-exporters
+# defaults file for postgres_exporter
+node_exporter_enable: False
+node_exporter_user: 'node_exporter'
+node_exporter_dir: '/opt/node_exporter'
+node_exporter_version: "0.17.0"
+node_exporter_uri: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+node_exporter_port: 9100
+
+postgres_exporter_enable: False
+postgres_exporter_pgstats: True
+postgres_exporter_user: 'postgres_exporter'
+postgres_exporter_dir: '/opt/postgres_exporter'
+postgres_exporter_connection_string: 'DATA_SOURCE_NAME="user=postgres host=/var/run/postgresql/ sslmode=disable"'
+postgres_exporter_start_flags: "--extend.query-path={{ postgres_exporter_dir }}/metrics.yaml --web.listen-address=:{{ postgres_exporter_port }}"
+postgres_exporter_version: "0.4.7"
+postgres_exporter_uri: "https://github.com/wrouesnel/postgres_exporter/releases/download/v{{ postgres_exporter_version }}/postgres_exporter_v{{ postgres_exporter_version }}_linux-amd64.tar.gz"
+postgres_exporter_port: 9187
+postgres_exporter_team: 'dba'

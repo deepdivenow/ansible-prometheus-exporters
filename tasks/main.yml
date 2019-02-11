@@ -1,0 +1,10 @@
+---
+# tasks file for ansible-prometheus-exporters
+
+- import_tasks: node.yml
+  when: node_exporter_enable
+  tags: [prometheus-exporters, node-exporter]
+
+- import_tasks: postgresql.yml
+  when: postgresql_exporter_enable
+  tags: [prometheus-exporters, postgresql-exporter, postgres-exporter]

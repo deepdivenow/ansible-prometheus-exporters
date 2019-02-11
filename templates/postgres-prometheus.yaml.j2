@@ -1,0 +1,5 @@
+- targets:
+    - '{{ ansible_fqdn }}:{{ postgres_exporter_port }}'
+  labels:
+    job: postgresql
+    team: {{ postgres_exporter_team }}

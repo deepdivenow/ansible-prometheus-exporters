@@ -1,0 +1,35 @@
+---
+# tasks file for node_exporter
+
+- name: Create user for exporter | Node
+  user: name="{{ node_exporter_user }}"
+
+- name: create directory for exporter | Node
+  file:
+    state: directory
+    path: "{{ node_exporter_dir }}"
+    owner: "{{ node_exporter_user }}"
+    recurse: true
+
+- name: download and unpack exporter | Node
+  unarchive:
+    src: "{{ node_exporter_uri }}"
+    dest: "{{ node_exporter_dir }}"
+    remote_src: yes
+    owner: "{{ node_exporter_user }}"
+    extra_opts: [--strip-components=1]
+  notify: restart node-exporter
+
+- name: create service | Node
+  template: src='node-exporter.service.j2' dest='/etc/systemd/system/node-exporter.service'
+  notify: restart node-exporter
+
+- name: start service | Node
+  service: name=node-exporter state=started enabled=yes
+
+- name: create prometheus job file for metrics gathering | Node
+  template: src=node-prometheus.yaml.j2 dest=/etc/prometheus/hosts/node-{{ ansible_fqdn }}.yaml
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  notify: reload prometheus
+  with_items: "{{ groups.prometheus | default([]) }}"

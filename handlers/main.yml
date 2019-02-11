@@ -1,0 +1,17 @@
+---
+# handlers file for ansible-prometheus-exporters
+
+- name: restart node-exporter
+  service: name=node-exporter state=restarted daemon-reload=yes
+
+- name: restart postgresql-exporter
+  service: name=postgresql-exporter state=restarted daemon-reload=yes
+
+- name: reload prometheus
+  uri:
+    url: http://localhost:9090/-/reload
+    method: POST
+  listen: "reload prometheus"
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  with_items: "{{ groups.prometheus | default([]) }}"

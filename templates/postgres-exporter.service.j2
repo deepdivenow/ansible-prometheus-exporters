@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus exporter for Postgresql (https://github.com/wrouesnel/postgres_exporter)
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60s
+TimeoutStartSec=20
+WorkingDirectory={{ postgres_exporter_dir }}
+EnvironmentFile={{ postgres_exporter_dir }}/env
+ExecStart={{ postgres_exporter_dir }}/postgres_exporter {{ postgres_exporter_start_flags }}
+User={{ postgres_exporter_user }}
+
+[Install]
+WantedBy=multi-user.target
