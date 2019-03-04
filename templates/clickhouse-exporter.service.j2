@@ -1,0 +1,14 @@
+[Unit]
+Description=Prometheus clickhouse exporter
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60s
+TimeoutStartSec=20
+WorkingDirectory={{ clickhouse_exporter_dir }}
+ExecStart={{ clickhouse_exporter_dir }}/clickhouse_exporter -telemetry.address :{{ clickhouse_exporter_port }}
+User={{ clickhouse_exporter_user }}
+
+[Install]
+WantedBy=multi-user.target

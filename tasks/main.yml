@@ -12,3 +12,7 @@
 - import_tasks: greenplum.yml
   when: greenplum_exporter_enable
   tags: [prometheus-exporters, greenplum-exporter]
+
+- import_tasks: clickhouse.yml
+  when: clickhouse_exporter_enable
+  tags: [prometheus-exporters, clickhouse-exporter]

@@ -9,7 +9,7 @@ node_exporter_uri: "https://github.com/prometheus/node_exporter/releases/downloa
 node_exporter_port: 9100
 
 postgres_exporter_enable: False
-postgres_exporter_user: 'postgres_exporter'
+postgres_exporter_user: 'postgres'
 postgres_exporter_dir: '/opt/postgres_exporter'
 postgres_exporter_connection_string: 'DATA_SOURCE_NAME="user=postgres host=/var/run/postgresql/ sslmode=disable"'
 postgres_exporter_start_flags: "--extend.query-path={{ postgres_exporter_dir }}/metrics.yaml --web.listen-address=:{{ postgres_exporter_port }}"
@@ -24,3 +24,8 @@ greenplum_exporter_dir: '/opt/greenplum_exporter'
 greenplum_exporter_start_flags: "--web.listen-address=:{{ greenplum_exporter_port }} --disable-settings-metrics"
 greenplum_exporter_port: 9187
 greenplum_exporter_team: 'dba'
+
+clickhouse_exporter_enable: False
+clickhouse_exporter_user: 'clickhouse'
+clickhouse_exporter_dir: '/opt/clickhouse_exporter'
+clickhouse_exporter_port: 9116

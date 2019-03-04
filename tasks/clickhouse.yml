@@ -1,0 +1,26 @@
+---
+# tasks file for clickhouse_exporter
+
+- name: create clickhouse-exporter dir
+  file: state=directory path={{ clickhouse_exporter_dir }}
+
+- name: copy clickhouse bin
+  get_url:
+    url: https://github.com/deepdivenow/ansible-prometheus-exporters/releases/download/0.1/clickhouse_exporter
+    dest: "{{ clickhouse_exporter_dir }}/clickhouse_exporter"
+    mode: 0755
+  notify: restart clickhouse-exporter
+
+- name: create service
+  template: src='clickhouse-exporter.service.j2' dest='/etc/systemd/system/clickhouse-exporter.service'
+  notify: restart clickhouse-exporter
+
+- name: start service | Clickhouse
+  service: name=clickhouse-exporter state=started enabled=yes
+
+- name: create prometheus job file for metrics gathering | Clickhouse
+  template: src=clickhouse-prometheus.yaml.j2 dest=/etc/prometheus/hosts/clickhouse-{{ ansible_fqdn }}.yaml
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  notify: reload prometheus
+  with_items: "{{ groups.prometheus | default([]) }}"

@@ -1,0 +1,7 @@
+- targets:
+    - '{{ ansible_fqdn }}:{{ clickhouse_exporter_port }}'
+  labels:
+    job: clickhouse
+{% if clickhouse_exporter_team is defined %}
+    team: {{ clickhouse_exporter_team }}
+{% endif %}
